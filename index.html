@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Espacio de Tareas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="user-profile">
+      <span class="user-avatar">👩‍💼</span>
+      <span class="user-name">Maria de Benito</span>
+    </div>
+
+    <nav class="nav-section">
+      <h3>Navegación</h3>
+      <ul class="nav-list">
+        <li><button class="nav-btn active" id="nav-dashboard">🏠 Dashboard</button></li>
+        <li><button class="nav-btn" id="nav-calendario">📅 Calendario</button></li>
+        <li><button class="nav-btn" id="nav-notas">📝 Notas</button></li>
+      </ul>
+    </nav>
+
+    <div class="filter-section">
+      <h3>Filtro</h3>
+      <ul class="filter-list">
+        <li><button class="filter-btn" data-filter="contexto">💼 Contexto</button></li>
+        <li><button class="filter-btn" data-filter="prioridad">⚡ Prioridad</button></li>
+        <li><button class="filter-btn" data-filter="plazo">📅 Plazo</button></li>
+        <li><button class="filter-btn" data-filter="estado">⚙️ Estado</button></li>
+      </ul>
+    </div>
+
+    <div class="status-section">
+      <h3>Estado</h3>
+      <ul class="status-legend">
+        <li class="legend-item"><span class="dot red"></span> Pendiente</li>
+        <li class="legend-item"><span class="dot yellow"></span> En Proceso</li>
+        <li class="legend-item"><span class="dot green"></span> Completado</li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main-content" id="dashboard-view">
+    
+    <header class="header-app">
+      <span class="calendar-badge">📅 17</span>
+      <h1>Mi Espacio de Tareas</h1>
+    </header>
+
+    <section class="task-form-container">
+      <form id="todo-form">
+        <div class="form-inputs">
+          <div class="input-group">
+            <label for="task-title">Tarea:</label>
+            <input type="text" id="task-title" placeholder="¿Qué proyecto tienes en mente?" required>
+          </div>
+          <div class="input-group">
+            <label for="task-subtitle">Subtarea:</label>
+            <input type="text" id="task-subtitle" placeholder="Añadir un paso...">
+          </div>
+          <button type="submit" class="btn-submit-task" id="btn-add">+</button>
+        </div>
+
+        <div class="form-metadata">
+          <div class="meta-select">
+            <span>Contexto</span>
+            <select id="task-context">
+              <option value="Trabajo">💼 Trabajo</option>
+              <option value="Estudio">🎓 Estudio</option>
+              <option value="Hogar">🏠 Hogar</option>
+              <option value="Personal">💆 Personal</option>
+            </select>
+          </div>
+
+          <div class="meta-select">
+            <span>Prioridad</span>
+            <select id="task-priority">
+              <option value="Alto">🔴 Alto</option>
+              <option value="Medium">🟡 Medium</option>
+              <option value="Low">⚪ Low</option>
+            </select>
+          </div>
+
+          <div class="meta-select">
+            <span>Plazo</span>
+            <input type="date" id="task-deadline">
+          </div>
+
+          <div class="meta-select">
+            <span>Estado</span>
+            <select id="task-status">
+              <option value="pendiente">🔴 Pendiente</option>
+              <option value="proceso">🟡 En Proceso</option>
+              <option value="completado">🟢 Completado</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="kanban-board">
+      
+      <div class="kanban-column" id="col-pendiente">
+        <div class="column-title"><span class="dot red"></span> PENDIENTE</div>
+        <div class="cards-container" id="container-pendiente">
+          
+          <article class="task-card border-pink" data-id="1">
+            <div class="card-header">
+              <h4>Presentar proyecto</h4>
+              <div class="card-utils">
+                <button class="btn-util">✏️</button>
+                <button class="btn-util">↗️</button>
+              </div>
+            </div>
+            <div class="card-tags">
+              <span class="tag estudio">Estudio</span>
+              <span class="tag date">📅 18 Junio</span>
+            </div>
+            <div class="card-actions">
+              <button class="btn-move move-left" disabled>⬅️</button>
+              <button class="btn-delete">🗑️</button>
+            </div>
+          </article>
+
+          <article class="task-card border-cyan" data-id="2">
+            <div class="card-header">
+              <h4>Comprar Huevos</h4>
+              <div class="card-utils">
+                <button class="btn-util">✏️</button>
+                <button class="btn-util">↗️</button>
+              </div>
+            </div>
+            <div class="card-tags">
+              <span class="tag hogar">Hogar</span>
+              <span class="tag date">📅 19 Junio</span>
+            </div>
+            <div class="card-actions">
+              <button class="btn-move move-left">⬅️</button>
+              <button class="btn-delete">🗑️</button>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <div class="kanban-column" id="col-proceso">
+        <div class="column-title"><span class="dot yellow"></span> EN PROCESO</div>
+        <div class="cards-container" id="container-proceso">
+          </div>
+      </div>
+
+      <div class="kanban-column" id="col-completado">
+        <div class="column-title"><span class="dot green"></span> COMPLETADO</div>
+        <div class="cards-container" id="container-completado">
+          </div>
+      </div>
+
+    </section>
+  </main>
+
+</body>
+</html>

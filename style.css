@@ -1,32 +1,34 @@
-/* VARIABLES DE DISEÑO (Paleta Pastel y Soft UI) */
+/* ==========================================================================
+   1. VARIABLES DE DISEÑO (Colores Basados en la Imagen y Requerimientos)
+   ========================================================================== */
 :root {
-  --bg-app: #e8f1f5;
+  --bg-main: #e8f1f5;
   --bg-sidebar: #f5f8fa;
   --bg-white: #ffffff;
-  --active-blue: #d6e6f7;
-  
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  
-  /* Colores Kanban */
-  --col-pendiente: #d0e7f9;
-  --col-proceso: #fff3cd;
-  --col-completado: #e2f0d9;
-
-  /* Contextos Pastel */
-  --ctx-estudio: #ebdcf9;
-  --ctx-hogar: #ffeedb;
-  --ctx-personal: #fcdede;
-  --ctx-trabajo: #d0e7f9;
-
+  --text-dark: #1e293b;
+  --text-gray: #64748b;
   --border-color: #e2e8f0;
-  --radius-lg: 16px;
-  --radius-md: 12px;
-  --radius-sm: 8px;
-  --shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  --selection-color: #d6e6f7;
+
+  /* Colores de Estado */
+  --status-pending: #ef4444;
+  --status-progress: #ffc107;
+  --status-completed: #4caf50;
+
+  /* Tus Colores Exactos de Prioridad */
+  --priority-high: #E72281;   /* Rosa Fucsia */
+  --priority-medium: #92EEEE; /* Turquesa */
+  --priority-bajo: #E8BE91;   /* Marrón Pastel */
+
+  /* Fondos Suaves para las Columnas Kanban */
+  --bg-col-pending: #e2effa;  /* Azul sutil como el diseño */
+  --bg-col-progress: #fef3c7; /* Amarillo sutil */
+  --bg-col-completed: #dcfce7;/* Verde sutil */
 }
 
-/* CONFIGURACIÓN GENERAL */
+/* ==========================================================================
+   2. RESET Y ESTILOS BASE
+   ========================================================================== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -35,14 +37,26 @@
 }
 
 body {
-  background-color: var(--bg-app);
-  color: var(--text-main);
+  background-color: var(--bg-main);
+  color: var(--text-dark);
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
-/* SIDEBAR LATERAL */
+/* Ocultador nativo moderno controlado desde JavaScript */
+[hidden] {
+  display: none !important;
+}
+
+/* Componentes de cabecera e interactivos ocultos por defecto en escritorio */
+.mobile-header, .close-sidebar-btn {
+  display: none;
+}
+
+/* ==========================================================================
+   3. ELEMENTOS DE LA BARRA LATERAL (SIDEBAR) - ESCRITORIO
+   ========================================================================== */
 .sidebar {
   width: 260px;
   background-color: var(--bg-sidebar);
@@ -50,191 +64,295 @@ body {
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 30px;
 }
 
-.user-profile {
+/* Botón del Perfil de Usuario */
+.user-profile-btn {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-weight: 600;
+  width: 100%;
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+  transition: all 0.2s ease;
 }
 
-.user-avatar {
-  font-size: 20px;
-  background: white;
-  padding: 6px;
-  border-radius: 50%;
-  box-shadow: var(--shadow);
+.user-profile-btn:hover {
+  background-color: var(--selection-color);
+  border-color: transparent;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-.nav-section h3, .filter-section h3, .status-section h3 {
+.user-profile-btn:active {
+  transform: translateY(0);
+  background-color: #cbdbe5;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-name {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.user-action-hint {
+  font-size: 11px;
+  color: var(--text-gray);
+}
+
+/* Encabezados y listas comunes de la barra lateral */
+.sidebar-menu h2 {
   font-size: 12px;
   text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 10px;
-  letter-spacing: 0.05em;
+  color: var(--text-gray);
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
 }
 
-.nav-list, .filter-list, .status-legend {
+.sidebar-menu ul {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
+/* Botones de Navegación Tradicionales */
 .nav-btn {
   width: 100%;
-  background: none;
-  border: none;
-  text-align: left;
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 15px;
-  color: var(--text-main);
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.nav-btn:hover { background-color: rgba(0,0,0,0.02); }
-.nav-btn.active {
-  background-color: var(--sidebar-active);
-  background-color: var(--active-blue);
-  font-weight: 600;
-}
-
-.filter-btn {
   background: var(--bg-white);
   border: 1px solid var(--border-color);
-  padding: 10px 14px;
+  padding: 10px 16px;
   border-radius: 20px;
   text-align: left;
-  cursor: pointer;
   font-size: 14px;
-  box-shadow: var(--shadow);
+  cursor: pointer;
+  color: var(--text-dark);
+  transition: all 0.2s ease;
 }
 
-.legend-item {
+.nav-btn.active {
+  background-color: var(--selection-color);
+  font-weight: bold;
+  border-color: transparent;
+}
+
+.nav-btn:hover {
+  background-color: #f8fafc;
+}
+
+/* --- Limpieza del Fieldset de Filtros --- */
+.filter-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.filter-fieldset legend {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text-gray);
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+  font-weight: bold;
+}
+
+.chip-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* --- Patrón Radio Chip Visual (Filtros en forma de botones) --- */
+.radio-chip {
+  cursor: pointer;
+  width: 100%;
+}
+
+.radio-chip input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.radio-chip span {
+  display: block;
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: var(--text-dark);
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.01);
+}
+
+.radio-chip:hover span {
+  background-color: #f8fafc;
+}
+
+.radio-chip input:checked + span {
+  background-color: var(--text-dark);
+  color: var(--bg-white);
+  border-color: var(--text-dark);
+  font-weight: 500;
+}
+
+/* --- Botones de la Leyenda de Estados --- */
+.status-legend-btn {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
   background: var(--bg-white);
-  padding: 8px 14px;
+  border: 1px solid var(--border-color);
+  padding: 10px 16px;
   border-radius: 20px;
   font-size: 14px;
-  box-shadow: var(--shadow);
+  cursor: pointer;
+  color: var(--text-dark);
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.01);
 }
 
+.status-legend-btn:hover {
+  background-color: #f8fafc;
+  transform: translateX(2px);
+}
+
+.status-legend-btn:active {
+  background-color: var(--selection-color);
+}
+
+/* Círculos de Estado de las Leyendas */
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
+  display: inline-block;
 }
-.dot.red { background-color: #ef4444; }
-.dot.yellow { background-color: #ffc107; }
-.dot.green { background-color: #4caf50; }
+.dot-pending { background-color: var(--status-pending); }
+.dot-progress { background-color: var(--status-progress); }
+.dot-completed { background-color: var(--status-completed); }
 
-/* CONTENIDO PRINCIPAL */
+/* ==========================================================================
+   4. CONTENIDO PRINCIPAL Y FORMULARIO DE TAREAS - ESCRITORIO
+   ========================================================================== */
 .main-content {
   flex: 1;
   padding: 30px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   overflow-y: auto;
 }
 
-.header-app {
+.main-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
+  gap: 15px;
 }
 
-.calendar-badge {
+.date-badge {
   background: var(--bg-white);
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow);
+  padding: 6px 12px;
+  border-radius: 8px;
   font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* BOX DE CREACIÓN */
-.task-form-container {
+/* Contenedor del Formulario */
+.form-container {
   background: var(--bg-white);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  box-shadow: var(--shadow);
+  padding: 24px;
+  border-radius: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
 }
 
-.form-inputs {
-  display: grid;
-  grid-template-columns: 2fr 1fr auto;
+.form-row {
+  display: flex;
   gap: 16px;
   align-items: flex-end;
+}
+
+.inputs-row {
   margin-bottom: 16px;
 }
 
-.input-group {
+.options-row {
+  border-top: 1px solid var(--border-color);
+  padding-top: 16px;
+}
+
+.form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  flex: 1;
 }
 
-.input-group label {
+.expand-2x { flex: 2; }
+.expand-1x { flex: 1; }
+
+.form-group label {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: bold;
+  color: var(--text-dark);
 }
 
-.input-group input {
-  padding: 10px 14px;
+.form-group input, .form-group select {
+  padding: 10px 16px;
   border: 1px solid var(--border-color);
   border-radius: 20px;
-  background: #f8fafc;
   outline: none;
+  font-size: 14px;
+  background-color: #fafafa;
 }
 
-.btn-submit-task {
+/* Botón Circular (+) */
+.submit-btn {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background: #e2e8f0;
   border: none;
   color: #3b82f6;
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: bold;
   cursor: pointer;
-  box-shadow: var(--shadow);
-}
-
-.form-metadata {
   display: flex;
-  gap: 20px;
-  border-top: 1px solid #f1f5f9;
-  padding-top: 12px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.meta-select {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.meta-select span {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-.meta-select select, .meta-select input {
-  padding: 6px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-color);
-  background: #f8fafc;
+/* Contenedor de Mensajes de Error */
+.error-message {
+  background-color: #fee2e2;
+  border-left: 4px solid var(--status-pending);
+  color: #991b1b;
+  padding: 12px;
+  border-radius: 8px;
   font-size: 13px;
+  margin-bottom: 16px;
+  font-weight: 500;
 }
 
-/* TABLERO KANBAN */
+/* ==========================================================================
+   5. TABLERO KANBAN Y TARJETAS DE TAREA - ESCRITORIO
+   ========================================================================== */
 .kanban-board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -243,20 +361,20 @@ body {
 }
 
 .kanban-column {
-  border-radius: var(--radius-lg);
-  padding: 16px;
+  padding: 20px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
-#col-pendiente { background-color: var(--col-pendiente); }
-#col-proceso { background-color: var(--col-proceso); }
-#col-completado { background-color: var(--col-completado); }
+.col-pending { background-color: var(--bg-col-pending); }
+.col-progress { background-color: var(--bg-col-progress); }
+.col-completed { background-color: var(--bg-col-completed); }
 
-.column-title {
-  font-weight: 700;
+.kanban-column h3 {
   font-size: 14px;
+  font-weight: bold;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -266,25 +384,19 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-height: 200px; /* Importante para cuando arrastres o metas datos */
+  min-height: 150px;
 }
 
-/* TARJETAS DE TAREA (MOCKUPS) */
+/* Tarjeta de Tarea Individual */
 .task-card {
   background: var(--bg-white);
-  border-radius: var(--radius-md);
-  padding: 14px;
-  box-shadow: var(--shadow);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.02);
   display: flex;
   flex-direction: column;
   gap: 10px;
-  border-left: 5px solid transparent;
 }
-
-/* Bordes de color de tu boceto */
-.task-card.border-pink { border-left-color: #ec4899; }
-.task-card.border-cyan { border-left-color: #22d3ee; }
-.task-card.border-orange { border-left-color: #f97316; }
 
 .card-header {
   display: flex;
@@ -292,45 +404,206 @@ body {
   align-items: flex-start;
 }
 
-.card-header h4 { font-size: 15px; font-weight: 500; }
+.card-header h4 {
+  font-size: 15px;
+  font-weight: 600;
+}
 
-.btn-util {
-  background: none;
-  border: none;
+.card-actions {
+  font-size: 14px;
   cursor: pointer;
-  font-size: 12px;
+  opacity: 0.6;
 }
 
 .card-tags {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .tag {
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  font-weight: 500;
+  background: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-gray);
 }
-.tag.estudio { background-color: var(--ctx-estudio); }
-.tag.hogar { background-color: var(--ctx-hogar); }
-.tag.personal { background-color: var(--ctx-personal); }
-.tag.date { background-color: #e0f2fe; color: #0369a1; }
 
-.card-actions {
+/* Bordes Izquierdos de Prioridad Exactos */
+.border-high { border-left: 5px solid var(--priority-high); }
+.border-medium { border-left: 5px solid var(--priority-medium); }
+.border-bajo { border-left: 5px solid var(--priority-bajo); }
+
+/* ==========================================================================
+   6. VENTANA MODAL DE REGISTRO
+   ========================================================================== */
+.auth-modal {
+  border: none;
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  background: var(--bg-white);
+}
+
+.auth-modal::backdrop {
+  background: rgba(30, 41, 59, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal-header {
   display: flex;
-  justify-content: flex-end;
-  gap: 6px;
-  border-top: 1px solid #f1f5f9;
-  padding-top: 8px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.btn-move, .btn-delete {
-  padding: 2px 6px;
-  border: 1px solid var(--border-color);
-  background: #f8fafc;
-  border-radius: var(--radius-sm);
+.modal-header h2 {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text-dark);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
   cursor: pointer;
+  color: var(--text-gray);
+  line-height: 1;
 }
 
-.btn-delete { background-color: #fee2e2; border: none; }
+.close-btn:hover {
+  color: var(--status-pending);
+}
+
+#modal-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ==========================================================================
+   7. ESTILOS RESPONSIVOS PARA MÓVILES (Media Query)
+   ========================================================================== */
+@media (max-width: 768px) {
+  
+  body {
+    flex-direction: column; /* Alinea de arriba a abajo la cabecera móvil y la app */
+    overflow-y: auto;       /* Permite scroll vertical general */
+  }
+
+  /* Mostramos el menú superior móvil */
+  .mobile-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: var(--bg-white);
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .menu-toggle-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--text-dark);
+  }
+
+  .mobile-title {
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  /* --- Transformación de la Sidebar a Menú Desplegable Latente --- */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px; /* Oculta el menú fuera del área visible izquierda */
+    width: 260px;
+    height: 100vh;
+    z-index: 100;
+    box-shadow: 5px 0 25px rgba(0,0,0,0.15);
+    transition: left 0.3s ease; /* Efecto suave de deslizamiento */
+  }
+
+  /* JavaScript activará esta clase al dar clic en el botón de los tres puntos (...) */
+  .sidebar.open {
+    left: 0; 
+  }
+
+  /* Mostramos el botón de la equis (×) para cerrar el menú */
+  .close-sidebar-btn {
+    display: block;
+    align-self: flex-end;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--text-gray);
+    cursor: pointer;
+    margin-bottom: -10px;
+  }
+
+  /* --- Adaptación del Contenedor Principal --- */
+  .main-content {
+    padding: 16px;
+    overflow-y: visible; /* Delega el scroll al cuerpo del body */
+  }
+
+  /* Escondemos el título antiguo que se ve en la PC */
+  .main-header {
+    display: none; 
+  }
+
+  /* El formulario encoge sus espacios */
+  .form-container {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  /* Las filas horizontales se ordenan verticalmente una tras otra */
+  .form-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .inputs-row {
+    margin-bottom: 12px;
+  }
+
+  /* Las opciones del selector se ordenan en una cómoda cuadrícula de 2x2 */
+  .options-row {
+    border-top: 1px solid var(--border-color);
+    padding-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* El botón de agregar (+) se expande para ser un botón táctil amplio */
+  .submit-btn {
+    width: 100%;
+    height: 44px;
+    border-radius: 20px;
+    margin-top: 8px;
+  }
+
+  /* --- Transformación del Tablero Kanban a un Diseño Apilado Vertical --- */
+  .kanban-board {
+    grid-template-columns: 1fr; /* Pasa de tener 3 columnas horizontales a solo 1 */
+    gap: 16px;
+  }
+
+  .kanban-column {
+    padding: 16px;
+    border-radius: 16px;
+  }
+}

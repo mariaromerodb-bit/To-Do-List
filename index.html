@@ -1,165 +1,191 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Espacio de Tareas</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Espacio de Tareas</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <aside class="sidebar">
-    <div class="user-profile">
-      <span class="user-avatar">👩‍💼</span>
-      <span class="user-name">Maria de Benito</span>
-    </div>
-
-    <nav class="nav-section">
-      <h3>Navegación</h3>
-      <ul class="nav-list">
-        <li><button class="nav-btn active" id="nav-dashboard">🏠 Dashboard</button></li>
-        <li><button class="nav-btn" id="nav-calendario">📅 Calendario</button></li>
-        <li><button class="nav-btn" id="nav-notas">📝 Notas</button></li>
-      </ul>
-    </nav>
-
-    <div class="filter-section">
-      <h3>Filtro</h3>
-      <ul class="filter-list">
-        <li><button class="filter-btn" data-filter="contexto">💼 Contexto</button></li>
-        <li><button class="filter-btn" data-filter="prioridad">⚡ Prioridad</button></li>
-        <li><button class="filter-btn" data-filter="plazo">📅 Plazo</button></li>
-        <li><button class="filter-btn" data-filter="estado">⚙️ Estado</button></li>
-      </ul>
-    </div>
-
-    <div class="status-section">
-      <h3>Estado</h3>
-      <ul class="status-legend">
-        <li class="legend-item"><span class="dot red"></span> Pendiente</li>
-        <li class="legend-item"><span class="dot yellow"></span> En Proceso</li>
-        <li class="legend-item"><span class="dot green"></span> Completado</li>
-      </ul>
-    </div>
-  </aside>
-
-  <main class="main-content" id="dashboard-view">
-    
-    <header class="header-app">
-      <span class="calendar-badge">📅 17</span>
-      <h1>Mi Espacio de Tareas</h1>
+    <header class="mobile-header" aria-label="Cabecera móvil">
+        <button type="button" id="menu-toggle-btn" class="menu-toggle-btn" aria-label="Abrir menú">•••</button>
+        <span class="mobile-title">Mi Espacio de Tareas</span>
     </header>
 
-    <section class="task-form-container">
-      <form id="todo-form">
-        <div class="form-inputs">
-          <div class="input-group">
-            <label for="task-title">Tarea:</label>
-            <input type="text" id="task-title" placeholder="¿Qué proyecto tienes en mente?" required>
-          </div>
-          <div class="input-group">
-            <label for="task-subtitle">Subtarea:</label>
-            <input type="text" id="task-subtitle" placeholder="Añadir un paso...">
-          </div>
-          <button type="submit" class="btn-submit-task" id="btn-add">+</button>
+    <aside class="sidebar" id="sidebar">
+        <button type="button" id="close-sidebar-btn" class="close-sidebar-btn" aria-label="Cerrar menú">×</button>
+
+        <button type="button" id="auth-trigger-btn" class="user-profile-btn" aria-label="Registrarse o Iniciar sesión">
+            <span class="avatar" role="img" aria-label="Avatar de Maria">👩‍💼</span>
+            <div class="user-info">
+                <span class="user-name">Maria de Benito</span>
+                <small class="user-action-hint">Registrarse / Ingresar</small>
+            </div>
+        </button>
+
+        <nav class="sidebar-menu" aria-label="Navegación principal">
+            <h2>Navegación</h2>
+            <ul>
+                <li><button type="button" class="nav-btn active">🏠 Dashboard</button></li>
+                <li><button type="button" class="nav-btn">📅 Calendario</button></li>
+                <li><button type="button" class="nav-btn">📝 Notas</button></li>
+            </ul>
+        </nav>
+
+        <fieldset class="sidebar-menu filter-fieldset">
+            <legend>Filtro</legend>
+            <div class="chip-group">
+                <label class="radio-chip">
+                    <input type="radio" name="sidebar-filter" value="context" checked>
+                    <span>Contexto</span>
+                </label>
+                <label class="radio-chip">
+                    <input type="radio" name="sidebar-filter" value="priority">
+                    <span>Prioridad</span>
+                </label>
+                <label class="radio-chip">
+                    <input type="radio" name="sidebar-filter" value="deadline">
+                    <span>Plazo</span>
+                </label>
+                <label class="radio-chip">
+                    <input type="radio" name="sidebar-filter" value="status">
+                    <span>Estado</span>
+                </label>
+            </div>
+        </fieldset>
+
+        <div class="sidebar-menu">
+            <h2>Estado</h2>
+            <ul class="legend-list">
+                <li>
+                    <button type="button" class="status-legend-btn" id="filter-status-pending">
+                        <span class="dot dot-pending"></span> Pendiente
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="status-legend-btn" id="filter-status-progress">
+                        <span class="dot dot-progress"></span> En Proceso
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="status-legend-btn" id="filter-status-completed">
+                        <span class="dot dot-completed"></span> Completado
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="main-header">
+            <span class="date-badge">📅</span>
+            <h1>Mi Espacio de Tareas</h1>
+        </header>
+
+        <section class="form-container" aria-label="Creador de tareas">
+            <form id="task-form">
+
+                <div id="form-error" class="error-message" role="alert" hidden>
+                    ⚠️ Por favor, rellena los campos obligatorios antes de continuar.
+                </div>
+
+                <div class="form-row inputs-row">
+                    <div class="form-group expand-2x">
+                        <label for="task-title">Tarea:</label>
+                        <input type="text" id="task-title" required placeholder="Ej. Presentar proyecto">
+                    </div>
+                    <div class="form-group expand-1x">
+                        <label for="task-subtitle">Subtarea:</label>
+                        <input type="text" id="task-subtitle" placeholder="Ej. Añadir un paso...">
+                    </div>
+                    <button type="submit" class="submit-btn" aria-label="Añadir tarea">+</button>
+                </div>
+
+                <div class="form-row options-row">
+                    <div class="form-group">
+                        <label for="task-context">Contexto</label>
+                        <select id="task-context">
+                            <option value="trabajo">💼 Trabajo</option>
+                            <option value="estudio">🎓 Estudio</option>
+                            <option value="hogar">🏠 Hogar</option>
+                            <option value="personal">💆 Personal</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-priority">Prioridad</label>
+                        <select id="task-priority">
+                            <option value="alto">Alto</option>
+                            <option value="medio">Medio</option>
+                            <option value="bajo">Bajo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-deadline">Plazo</label>
+                        <input type="date" id="task-deadline">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-status">Estado</label>
+                        <select id="task-status">
+                            <option value="pendiente">Pendiente</option>
+                            <option value="proceso">En Proceso</option>
+                            <option value="completado">Completado</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <div class="kanban-board">
+
+            <section class="kanban-column col-pending" aria-labelledby="title-pending">
+                <h3 id="title-pending"><span class="dot dot-pending"></span> PENDIENTE (2)</h3>
+            </section>
+
+            <section class="kanban-column col-progress" aria-labelledby="title-progress">
+                <h3 id="title-progress"><span class="dot dot-progress"></span> EN PROCESO (0)</h3>
+                <div class="cards-container"></div>
+            </section>
+
+            <section class="kanban-column col-completed" aria-labelledby="title-completed">
+                <h3 id="title-completed"><span class="dot dot-completed"></span> COMPLETADO (0)</h3>
+                <div class="cards-container"></div>
+            </section>
+
+        </div>
+    </main>
+
+    <dialog id="auth-modal" class="auth-modal">
+        <div class="modal-header">
+            <h2>Registro de Usuario</h2>
+            <button type="button" id="close-modal-btn" class="close-btn" aria-label="Cerrar ventana">×</button>
         </div>
 
-        <div class="form-metadata">
-          <div class="meta-select">
-            <span>Contexto</span>
-            <select id="task-context">
-              <option value="Trabajo">💼 Trabajo</option>
-              <option value="Estudio">🎓 Estudio</option>
-              <option value="Hogar">🏠 Hogar</option>
-              <option value="Personal">💆 Personal</option>
-            </select>
-          </div>
+        <form id="modal-auth-form">
+            <div id="modal-error" class="error-message" hidden></div>
 
-          <div class="meta-select">
-            <span>Prioridad</span>
-            <select id="task-priority">
-              <option value="Alto">🔴 Alto</option>
-              <option value="Medium">🟡 Medium</option>
-              <option value="Low">⚪ Low</option>
-            </select>
-          </div>
-
-          <div class="meta-select">
-            <span>Plazo</span>
-            <input type="date" id="task-deadline">
-          </div>
-
-          <div class="meta-select">
-            <span>Estado</span>
-            <select id="task-status">
-              <option value="pendiente">🔴 Pendiente</option>
-              <option value="proceso">🟡 En Proceso</option>
-              <option value="completado">🟢 Completado</option>
-            </select>
-          </div>
-        </div>
-      </form>
-    </section>
-
-    <section class="kanban-board">
-      
-      <div class="kanban-column" id="col-pendiente">
-        <div class="column-title"><span class="dot red"></span> PENDIENTE</div>
-        <div class="cards-container" id="container-pendiente">
-          
-          <article class="task-card border-pink" data-id="1">
-            <div class="card-header">
-              <h4>Presentar proyecto</h4>
-              <div class="card-utils">
-                <button class="btn-util">✏️</button>
-                <button class="btn-util">↗️</button>
-              </div>
+            <div class="form-group">
+                <label for="reg-name">Nombre Completo *</label>
+                <input type="text" id="reg-name" placeholder="Ej. Maria de Benito" required>
             </div>
-            <div class="card-tags">
-              <span class="tag estudio">Estudio</span>
-              <span class="tag date">📅 18 Junio</span>
+
+            <div class="form-group">
+                <label for="reg-email">Correo Electrónico *</label>
+                <input type="email" id="reg-email" placeholder="ejemplo@correo.com" required>
             </div>
-            <div class="card-actions">
-              <button class="btn-move move-left" disabled>⬅️</button>
-              <button class="btn-delete">🗑️</button>
-            </div>
-          </article>
 
-          <article class="task-card border-cyan" data-id="2">
-            <div class="card-header">
-              <h4>Comprar Huevos</h4>
-              <div class="card-utils">
-                <button class="btn-util">✏️</button>
-                <button class="btn-util">↗️</button>
-              </div>
-            </div>
-            <div class="card-tags">
-              <span class="tag hogar">Hogar</span>
-              <span class="tag date">📅 19 Junio</span>
-            </div>
-            <div class="card-actions">
-              <button class="btn-move move-left">⬅️</button>
-              <button class="btn-delete">🗑️</button>
-            </div>
-          </article>
+            <button type="submit" class="nav-btn active" style="text-align: center; margin-top: 10px;">
+                Registrarse
+            </button>
+        </form>
+    </dialog>
 
-        </div>
-      </div>
-
-      <div class="kanban-column" id="col-proceso">
-        <div class="column-title"><span class="dot yellow"></span> EN PROCESO</div>
-        <div class="cards-container" id="container-proceso">
-          </div>
-      </div>
-
-      <div class="kanban-column" id="col-completado">
-        <div class="column-title"><span class="dot green"></span> COMPLETADO</div>
-        <div class="cards-container" id="container-completado">
-          </div>
-      </div>
-
-    </section>
-  </main>
-
+    <script src="js/app.js" type="module"></script>
 </body>
+
 </html>

@@ -1,83 +1,90 @@
-// Añade estas capturas arriba del todo en el archivo, junto a las otras
+// ==========================================================================
+// 1. CAPTURA DE ELEMENTOS DEL DOM
+// ==========================================================================
+
+// Elementos para el Menú Móvil Desplegable
 const sidebar = document.getElementById('sidebar');
 const menuToggleBtn = document.getElementById('menu-toggle-btn');
 const closeSidebarBtn = document.getElementById('close-sidebar-btn');
 
-export function inicializarMenu(funcionLogicaIniciarSesion) {
-    
-    // --- NUEVO: Control del menú desplegable móvil ---
-    if (menuToggleBtn && closeSidebarBtn) {
-        // Al pulsar "..." añadimos la clase 'open' para que deslice desde la izquierda
-        menuToggleBtn.addEventListener('click', () => {
-            sidebar.classList.add('open');
-        });
-
-        // Al pulsar la '×' removemos la clase 'open' para ocultarlo
-        closeSidebarBtn.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-        });
-    }
-}    
-    
-    // ... todo tu código anterior (modal de login, etc.) se queda exactamente igual abajo
-
-// Elementos de la barra lateral
+// Elementos del Perfil de Usuario en la Barra Lateral
 const authBtn = document.getElementById('auth-trigger-btn');
 const userNameSpan = document.querySelector('.user-name');
 const userHintSmall = document.querySelector('.user-action-hint');
 
-// Elementos del nuevo Modal de Registro
+// Elementos de la Ventana Modal de Registro
 const authModal = document.getElementById('auth-modal');
 const closeModalBtn = document.getElementById('close-modal-btn');
 const modalForm = document.getElementById('modal-auth-form');
 const modalError = document.getElementById('modal-error');
 
+// ==========================================================================
+// 2. FUNCIÓN DE INICIALIZACIÓN ÚNICA
+// ==========================================================================
 export function inicializarMenu(funcionLogicaIniciarSesion) {
     
-    // 1. Abrir el modal al hacer clic en el avatar
-    authBtn.addEventListener('click', () => {
-        // Limpiamos errores previos y campos antes de abrir
-        modalError.setAttribute('hidden', 'true');
-        modalForm.reset();
+    // --- LÓGICA DEL MENÚ DESPLEGABLE MÓVIL ---
+    if (menuToggleBtn && closeSidebarBtn && sidebar) {
+        // Al pulsar "..." añadimos la clase 'open' para deslizar la barra lateral
+        menuToggleBtn.addEventListener('click', () => {
+            sidebar.classList.add('open');
+        });
+
+        // Al pulsar la '×' removemos la clase 'open' para ocultarla de nuevo
+        closeSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+        });
+    }
+
+    // --- LÓGICA DE LA VENTANA MODAL DE REGISTRO ---
+    if (authBtn && authModal && closeModalBtn && modalForm) {
         
-        // .showModal() es un método nativo de la etiqueta <dialog>
-        authModal.showModal(); 
-    });
+        // Abrir el modal al hacer clic en el perfil del usuario
+        authBtn.addEventListener('click', () => {
+            modalError.setAttribute('hidden', 'true');
+            modalForm.reset();
+            authModal.showModal(); // Método nativo de <dialog>
+        });
 
-    // 2. Cerrar el modal con el botón de la equis (×)
-    closeModalBtn.addEventListener('click', () => {
-        authModal.close(); // .close() oculta el diálogo nativamente
-    });
+        // Cerrar el modal con el botón '×' interno
+        closeModalBtn.addEventListener('click', () => {
+            authModal.close(); // Método nativo de <dialog>
+        });
 
-    // 3. Gestionar el envío del formulario del modal
-    modalForm.addEventListener('submit', (evento) => {
-        // Evitamos que la página se recargue por defecto al enviar el formulario
-        evento.preventDefault(); 
+        // Gestionar el envío seguro de los datos de registro
+        modalForm.addEventListener('submit', (evento) => {
+            evento.preventDefault(); 
 
-        // Capturamos los valores de los inputs
-        const nombreInput = document.getElementById('reg-name').value;
-        const emailInput = document.getElementById('reg-email').value;
+            const nombreInput = document.getElementById('reg-name').value;
+            const emailInput = document.getElementById('reg-email').value;
 
-        try {
-            // Enviamos ambos datos a la lógica de negocio
-            const usuarioGuardado = funcionLogicaIniciarSesion(nombreInput, emailInput);
+            try {
+                // Ejecutamos la validación en la capa lógica
+                const usuarioGuardado = funcionLogicaIniciarSesion(nombreInput, emailInput);
 
-            // Si la lógica responde bien, actualizamos la barra lateral
-            actualizarInterfazUsuario(usuarioGuardado.nombre);
-            
-            // Cerramos la ventana flotante automáticamente
-            authModal.close();
+                // Si todo es correcto, modificamos la interfaz
+                actualizarInterfazUsuario(usuarioGuardado.nombre);
+                
+                // Cerramos el modal y también cerramos la barra lateral si estábamos en móvil
+                authModal.close();
+                sidebar.classList.remove('open');
 
-        } catch (error) {
-            // Si la lógica detecta un fallo, mostramos el error en español dentro del modal
-            modalError.textContent = `⚠️ ${error.message}`;
-            modalError.removeAttribute('hidden');
-        }
-    });
+            } catch (error) {
+                // Imprimimos el error controlado en español en el modal
+                modalError.textContent = `⚠️ ${error.message}`;
+                modalError.removeAttribute('hidden');
+            }
+        });
+    }
 }
 
+// ==========================================================================
+// 3. FUNCIONES AUXILIARES DE LA VISTA
+// ==========================================================================
 function actualizarInterfazUsuario(nombre) {
-    userNameSpan.textContent = nombre;
-    userHintSmall.textContent = "¡Sesión iniciada!";
-    authBtn.style.cursor = 'default';
+    if (userNameSpan && userHintSmall && authBtn) {
+        userNameSpan.textContent = nombre;
+        userHintSmall.textContent = "¡Sesión iniciada!";
+        authBtn.style.cursor = 'default';
+    }
 }

@@ -1,5 +1,5 @@
 // Este array será nuestra base de datos temporal en memoria
-let listadoTareas = [];
+let listadoTareas = JSON.parse(localStorage.getItem('mis-tareas-kanban')) || [];
 
 /**
  * Crea una nueva tarea y la añade al listado general.
@@ -31,6 +31,8 @@ export function crearTarea(datosTarea) {
     console.log("Lógica: Tarea creada con éxito:", nuevaTarea);
     console.log("Lógica: Listado total actual:", listadoTareas);
 
+    guardarEnLocalStorage();
+
     return nuevaTarea;
 }
 
@@ -50,6 +52,7 @@ export function eliminarTareaPorId(id) {
     
     console.log(`Lógica: Tarea con ID ${id} eliminada.`);
     console.log("Lógica: Listado actualizado:", listadoTareas);
+    guardarEnLocalStorage();
 }
 /**
  * Modifica el estado de una tarea existente en el listado general.
@@ -64,6 +67,15 @@ export function actualizarEstadoTareaPorId(id, nuevoEstado) {
         tarea.estado = nuevoEstado;
         console.log(`Lógica: Tarea "${tarea.titulo}" movida a -> ${nuevoEstado}`);
         console.log("Lógica: Listado actualizado:", listadoTareas);
+        guardarEnLocalStorage();
         return tarea;
     }
+}
+/**
+ * Guarda el estado actual de la lista de tareas en el disco duro del navegador.
+ */
+function guardarEnLocalStorage() {
+    // LocalStorage solo entiende texto plano, por eso transformamos 
+    // nuestro array de objetos en un texto usando JSON.stringify
+    localStorage.setItem('mis-tareas-kanban', JSON.stringify(listadoTareas));
 }

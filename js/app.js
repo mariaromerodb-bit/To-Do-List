@@ -1,17 +1,38 @@
 import { inicializarMenu } from './vista/ui-menu.js';
 import { iniciarSesion } from './logica/usuario.js';
 
-// Importamos la nueva función para actualizar el estado
-import { crearTarea, eliminarTareaPorId, actualizarEstadoTareaPorId } from './logica/tareas.js';
+// Añadimos 'obtenerTodasLasTareas' a la importación de la lógica
+import { crearTarea, eliminarTareaPorId, actualizarEstadoTareaPorId, obtenerTodasLasTareas } from './logica/tareas.js';
 import { renderizarTareaEnTablero, actualizarContadoresTablero } from './vista/ui-tablero.js';
 
 console.log("🚀 Arrancando la aplicación...");
 
+// 1. Inicializamos menús y registro de usuario
 inicializarMenu(iniciarSesion);
+
+// 2. Seteamos los contadores a (0) por si acaso
 actualizarContadoresTablero();
 
+
 // ==========================================================================
-// CONTROL DEL FORMULARIO DE TAREAS
+// NUEVO: RECUPERAR Y PINTAR TAREAS GUARDADAS AL ARRANCAR
+// ==========================================================================
+// Le pedimos a la lógica la lista de tareas que leyó del LocalStorage
+const tareasGuardadas = obtenerTodasLasTareas();
+
+// Si hay tareas guardadas del día anterior, las recorremos una a una
+if (tareasGuardadas && tareasGuardadas.length > 0) {
+    console.log(`📦 Encontradas ${tareasGuardadas.length} tareas en LocalStorage. Renderizando...`);
+    
+    tareasGuardadas.forEach(tarea => {
+        // Las pintamos en el tablero pasándole sus funciones correspondientes
+        renderizarTareaEnTablero(tarea, eliminarTareaPorId, actualizarEstadoTareaPorId);
+    });
+}
+
+
+// ==========================================================================
+// CONTROL DEL FORMULARIO DE TAREAS (Sigue exactamente igual que antes)
 // ==========================================================================
 const taskForm = document.getElementById('task-form');
 const formError = document.getElementById('form-error');
@@ -34,7 +55,7 @@ if (taskForm) {
         try {
             const nuevaTarea = crearTarea(datosFormulario);
 
-            // Pasamos tres cosas: la tarea, la función de borrar y la función de mover
+            // Pintamos la nueva tarea pasándole las funciones necesarias
             renderizarTareaEnTablero(nuevaTarea, eliminarTareaPorId, actualizarEstadoTareaPorId);
 
             taskForm.reset();
